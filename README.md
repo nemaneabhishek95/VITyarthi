@@ -16,7 +16,6 @@ A Python-based solution for optimizing college bus routes using a nearest neighb
 
 ## Installation
 
-bash
 git clone https://github.com/yourusername/college-bus-route-optimizer.git
 cd college-bus-route-optimizer
 pip install matplotlib numpy
@@ -45,10 +44,6 @@ optimizer = BusRouteOptimizer(
     num_buses=2,
     bus_capacity=30
 )
-
-optimizer.nearest_neighbor_clustering()
-optimizer.print_route_details()
-optimizer.visualize_routes()
 
 To run the example directly:
 
@@ -152,11 +147,3 @@ Real map integration with Folium
 Traffic pattern consideration
 
 Web-based interface
-
-
-
----
-
-Contributing
-
-Pull requests are welcome. For major changes, please open an issue first and discuss what you would like to change.
