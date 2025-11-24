@@ -1,149 +1,75 @@
-# College Bus Route Optimizer
+# 🚌 College Bus Route Optimizer
 
-A Python-based solution for optimizing college bus routes using a nearest neighbor clustering algorithm. It minimizes total travel distance while respecting bus capacity constraints.
+This project implements a simple **Bus Route Optimization** solution using Python, focusing on clustering student pickup locations and generating routes based on the **Nearest Neighbor** heuristic. The goal is to efficiently transport students from their scattered pickup points to a central college location using a limited number of buses, each with a maximum capacity.
 
----
+## ⚙️ How It Works
 
-## Features
+The core logic is encapsulated in the `BusRouteOptimizer` class.
 
-- Route optimization using nearest neighbor algorithm  
-- Visual representation of optimized routes  
-- Detailed route statistics and analytics  
-- Configurable number of buses and capacities  
-- Works with coordinate-based locations (latitude/longitude)
+### 1. Nearest Neighbor Clustering
 
----
+The `nearest_neighbor_clustering` method is the heart of the optimization. It works as follows:
 
-## Installation
+1.  **Initialization:** Starts at the **College Location**.
+2.  **Iterative Selection:** For the current bus, it repeatedly selects the unassigned student pickup point that is **closest (nearest neighbor)** to the bus's **current location** (initially the college, then the last student picked up).
+3.  **Route Building:** The selected student is added to the bus's route, and the student's location becomes the new current location for the bus.
+4.  **Capacity Check:** This process continues until the bus reaches its `bus_capacity` or there are no remaining students.
+5.  **New Bus:** Once a bus is full or all remaining students are assigned, the process repeats for the next available bus, starting again from the **College Location** to find the nearest unassigned student.
 
-git clone https://github.com/yourusername/college-bus-route-optimizer.git
-cd college-bus-route-optimizer
+
+
+### 2. Route Distance Calculation
+
+The `calculate_route_distance` method calculates the total Euclidean distance for a complete bus route, which includes:
+
+* **College** $\rightarrow$ **First Student**
+* **Student** $\rightarrow$ **Next Student** (for all intermediate stops)
+* **Last Student** $\rightarrow$ **College** (return trip)
+
+## 🧰 Requirements
+
+This script requires the following standard Python libraries:
+
+* `matplotlib` (for visualization)
+* `numpy` (for distance calculation)
+
+You can install them using pip:
+
+```bash
 pip install matplotlib numpy
-
-
-
-
-Usage
-
-from bus_optimizer import BusRouteOptimizer
-
-# Define locations
+🚀 UsageThe main block of the script (if __name__ == "__main__":) demonstrates how to initialize the optimizer, run the clustering, and visualize the results.Example 1: Random Data (45 students, 3 buses)Python# Initialize with random student locations
 college = (50, 50)
-students = [
-    (20, 30),
-    (25, 35),
-    (70, 70),
-    (75, 68),
-    (40, 80)
+num_students = 45
+student_locations = [(random.uniform(10, 90), random.uniform(10, 90)) for _ in range(num_students)]
+
+optimizer = BusRouteOptimizer(
+    college_location=college,
+    student_locations=student_locations,
+    num_buses=3,
+    bus_capacity=20
+)
+
+# Run optimization
+optimizer.nearest_neighbor_clustering()
+optimizer.print_route_details()
+optimizer.visualize_routes()
+Example 2: Custom Data (12 students, 2 buses)Python# Initialize with specific, clustered student locations
+custom_students = [
+    (20, 30), (25, 35), (22, 28),  # Cluster 1
+    (70, 70), (75, 68), (72, 73),  # Cluster 2
+    (40, 80), (38, 82), (42, 78),  # Cluster 3
+    (80, 20), (82, 18), (78, 22),  # Cluster 4
 ]
 
-# Create and run optimizer
-optimizer = BusRouteOptimizer(
-    college_location=college,
-    student_locations=students,
+optimizer2 = BusRouteOptimizer(
+    college_location=(50, 50),
+    student_locations=custom_students,
     num_buses=2,
-    bus_capacity=30
+    bus_capacity=8
 )
 
-To run the example directly:
-
-python bus_optimizer.py
-
-
----
-
-Configuration
-
-Parameter	Type	Description
-
-college_location	tuple	(x, y) coordinates of the college
-student_locations	list	List of (x, y) coordinates of students
-num_buses	int	Number of available buses
-bus_capacity	int	Maximum students per bus
-
-
-
----
-
-Algorithm
-
-Nearest Neighbor Clustering
-
-1. Start at the college location.
-
-
-2. For each bus, repeatedly pick the nearest unassigned student.
-
-
-3. Continue until the bus is full or no students remain.
-
-
-4. Return the bus to the college.
-
-
-
-Distance Calculation (Euclidean):
-
-d = \sqrt{(x_2 - x_1)^2 + (y_2 - y_1)^2}
-
-
----
-
-Example with CSV Data
-
-import pandas as pd
-from bus_optimizer import BusRouteOptimizer
-
-df = pd.read_csv("student_locations.csv")
-
-students = list(zip(df["latitude"], df["longitude"]))
-college = (df["college_lat"].iloc[0], df["college_long"].iloc[0])
-
-optimizer = BusRouteOptimizer(
-    college_location=college,
-    student_locations=students,
-    num_buses=3,
-    bus_capacity=40
-)
-
-optimizer.nearest_neighbor_clustering()
-optimizer.visualize_routes()
-
-
----
-
-Sample Output
-
-BUS ROUTE OPTIMIZATION RESULTS
-Bus 1: Students: 15/20  Route Distance: 245.73 km
-Bus 2: Students: 15/20  Route Distance: 238.91 km
-==================================================
-Total Distance (All Buses): 484.64 km
-Total Students: 30
-
-
----
-
-Requirements
-
-Python 3.7+
-
-matplotlib
-
-numpy
-
-
-
----
-
-Future Enhancements
-
-Genetic algorithm optimization
-
-Time window constraints
-
-Real map integration with Folium
-
-Traffic pattern consideration
-
-Web-based interface
+# Run optimization
+optimizer2.nearest_neighbor_clustering()
+optimizer2.print_route_details()
+optimizer2.visualize_routes(figsize=(10, 8))
+📊 OutputRoute DetailsThe print_route_details method prints a summary of the optimized routes, including:The number of students assigned to each bus.The total distance covered by each bus's round trip.The overall total distance covered by all buses.VisualizationThe visualize_routes method generates a scatter plot map showing:The College Location (Red Star $\star$).Student Pickup Points grouped by their assigned bus (colored circles).The Bus Routes themselves, showing the sequence of pickups and the return trip to the college.
