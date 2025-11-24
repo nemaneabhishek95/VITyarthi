@@ -1,4 +1,4 @@
-**🚌 College Bus Route Optimizer**
+** College Bus Route Optimizer**
 A Python-based solution for optimizing college bus routes using nearest neighbor clustering algorithm. Minimizes travel distance while respecting bus capacity constraints.
 Features
 
